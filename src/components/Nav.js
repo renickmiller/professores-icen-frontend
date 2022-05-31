@@ -10,7 +10,7 @@ function Nav() {
   const [filterSearch, setFilterSearch] = useState([]);
   let navigate = useNavigate();
 
-  fetch('http://localhost:8080/professores')
+  fetch('https://professores-backend.herokuapp.com/professores')
     .then(function (response) {
       return response.json();
     })

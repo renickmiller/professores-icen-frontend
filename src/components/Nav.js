@@ -3,23 +3,25 @@ import { GoSearch } from 'react-icons/go';
 import { useEffect, useState } from 'react';
 import { IconContext } from 'react-icons/lib';
 import { useNavigate } from 'react-router-dom';
-import Professor from './Professor';
+
 function Nav() {
   const [nomesTotal, setNomesTotal] = useState([]); //estado que armazena os dados do fetch
   const [inputSearch, setInputSearch] = useState('');
   const [filterSearch, setFilterSearch] = useState([]);
   let navigate = useNavigate();
 
-  fetch('https://professores-backend.herokuapp.com/professores')
-    .then(function (response) {
-      return response.json();
-    })
-    .then(function (data) {
-      setNomesTotal(data);
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
+  useEffect(() => {
+    fetch('https://professores-backend.herokuapp.com/professores')
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (data) {
+        setNomesTotal(data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }, []);
 
   const handleFilter = (e) => {
     e.preventDefault(e);

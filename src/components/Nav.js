@@ -56,7 +56,6 @@ function Nav() {
   });
 
   function handleClickAutoComplete(value) {
-    console.log(value);
     setInputSearch(value.nome);
     navigate('/professor', { state: value });
   }

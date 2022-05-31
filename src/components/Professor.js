@@ -5,7 +5,7 @@ import Table from 'react-bootstrap/Table';
 
 function Professor() {
   const location = useLocation();
-  console.log(location.state);
+
   return (
     <div className={styles.container}>
       <h1>Professor</h1>

@@ -15,7 +15,7 @@ function Professor() {
 
         <h2>{location.state.nome}</h2>
 
-        <Table striped bordered hover>
+        <Table striped bordered hover variant="dark" size="sm">
           <thead>
             <tr>
               <th>CITAÇÕES</th>

@@ -1,15 +1,21 @@
 import styles from './Nav.module.css';
-import { GoSearch } from 'react-icons/go';
 import { useEffect, useState } from 'react';
-import { IconContext } from 'react-icons/lib';
 import { useNavigate } from 'react-router-dom';
 import Table from 'react-bootstrap/Table';
 
 function Nav() {
-  const [nomesTotal, setNomesTotal] = useState([]); //estado que armazena os dados do fetch
-  const [inputSearch, setInputSearch] = useState('');
-  const [filterSearch, setFilterSearch] = useState([]);
-  let navigate = useNavigate();
+  let [nomesTotal, setNomesTotal] = useState([]); //estado que armazena os dados do fetch
+  const [order, setOrder] = useState(1); //estado que diz se a lista esta em ordem cresc ou decresc
+  const [colum, setColum] = useState('nome');
+
+  const handleOrder = (fieldName) => {
+    setOrder(-order);
+    setColum(fieldName);
+  };
+
+  nomesTotal = nomesTotal.sort((a, b) => {
+    return a[colum] < b[colum] ? -order : order;
+  });
 
   useEffect(() => {
     fetch('https://professores-backend.herokuapp.com/professores')
@@ -24,92 +30,61 @@ function Nav() {
       });
   }, []);
 
-  const handleFilter = (e) => {
-    e.preventDefault(e);
-    setInputSearch(e.target.value);
-
-    const newFilter = nomesTotal.filter((value) => {
-      return value.nome.toLowerCase().includes(inputSearch.toLocaleLowerCase());
-    });
-    setFilterSearch(newFilter);
-  };
-
-  useEffect(() => {
-    if (inputSearch === '') {
-      setFilterSearch([]);
-    }
-  }, [inputSearch]);
-
-  const resultList = filterSearch.map((values) => {
-    return (
-      <div className={styles.dataItem}>
-        <li
-          key={values.idprofessores}
-          onClick={() => handleClickAutoComplete(values)}
-        >
-          <IconContext.Provider value={{ color: '#B8B8B8', size: '30px' }}>
-            <GoSearch />
-          </IconContext.Provider>
-          <span>{values.nome}</span>
-        </li>
-      </div>
-    );
-  });
-
-  function handleClickAutoComplete(value) {
-    setInputSearch(value.nome);
-    navigate('/professor', { state: value });
-  }
-
   return (
     <>
       <div className={styles.newBody}>
-        <div className={styles.content}>
-          <IconContext.Provider value={{ color: '#B8B8B8', size: '30px' }}>
-            <GoSearch />
-            <input
-              type="text"
-              id="professor"
-              placeholder="Buscar Professor ..."
-              value={inputSearch}
-              onChange={handleFilter}
-            />
-          </IconContext.Provider>
-        </div>
-
-        {filterSearch !== 0 && (
-          <div className={styles.dataResult}>
-            <ul>{resultList}</ul>
-          </div>
-        )}
-
-        <Table striped bordered hover variant="dark" size="sm">
+        <Table
+          striped
+          bordered
+          hover
+          variant="dark"
+          size="sm"
+          className={styles.table}
+        >
           <thead>
             <tr>
-              <th>#</th>
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>Username</th>
+              <th onClick={(e) => handleOrder('idprofessores')}>#</th>
+              <th onClick={(e) => handleOrder('nome')}>Professor</th>
+              <th onClick={(e) => handleOrder('citacoes')}>Citaçoes</th>
+              <th onClick={(e) => handleOrder('ih')}>Índice h</th>
+              <th onClick={(e) => handleOrder('i10')}>Índice i10</th>
+              <th onClick={(e) => handleOrder('citacoes_2017')}>
+                Citaçoes desde 2017
+              </th>
+              <th onClick={(e) => handleOrder('ih_2017')}>
+                Índice h desde 2017
+              </th>
+              <th onClick={(e) => handleOrder('i10_2017')}>
+                Índice i10 desde 2017
+              </th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>1</td>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>@mdo</td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Jacob</td>
-              <td>Thornton</td>
-              <td>@fat</td>
-            </tr>
-            <tr>
-              <td>3</td>
-              <td colSpan={2}>Larry the Bird</td>
-              <td>@twitter</td>
-            </tr>
+            {nomesTotal.map(
+              ({
+                idprofessores,
+                nome,
+                citacoes,
+                ih,
+                i10,
+                citacoes_2017,
+                ih_2017,
+                i10_2017,
+              }) => {
+                return (
+                  <tr key={idprofessores}>
+                    <td>{idprofessores}</td>
+                    <td>{nome}</td>
+                    <td>{citacoes}</td>
+                    <td>{ih}</td>
+                    <td>{i10}</td>
+                    <td>{citacoes_2017}</td>
+                    <td>{ih_2017}</td>
+                    <td>{i10_2017}</td>
+                  </tr>
+                );
+              },
+            )}
           </tbody>
         </Table>
       </div>
